@@ -1,0 +1,27 @@
+{
+  "name": "fe-realworld-recoil",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/dbdpfls/fe-realworld-recoil.git",
+  "author": "yrin <yu-yerin>",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recoil": "^0.7.7"
+  },
+  "scripts": {
+    "dev": "next dev",       
+    "build": "next build",   
+    "start": "next start",   
+    "lint": "next lint",     
+    "prepare": "husky install" 
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "@types/react": "^19.0.8",
+    "@types/recoil": "^0.0.9",
+    "typescript": "^5.7.3"
+  }
+}
