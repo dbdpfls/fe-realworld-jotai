@@ -1,13 +1,41 @@
-# Node modules
+# 📌 Node modules (의존성 패키지)
 node_modules/
 npm-debug.log
 yarn-error.log
+pnpm-debug.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-# Next.js build files
+# 📌 Next.js 빌드 파일
 .next/
 out/
 .cache/
-.DS_Store
+.vercel/
+dist/
 
-# TypeScript
+# 📌 TypeScript 관련 캐시 파일
 *.tsbuildinfo
+next-env.d.ts
+
+# 📌 환경 변수 파일 (보안)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# 📌 OS 관련 불필요한 파일
+.DS_Store
+Thumbs.db
+
+# 📌 IDE 설정 파일 (불필요한 개인 설정 방지)
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.log
+
+# 📌 MacOS 관련 파일 무시
+*.DS_Store
