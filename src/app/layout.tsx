@@ -1,3 +1,6 @@
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+
 export default function RootLayout({
   children,
 }: {
@@ -21,8 +24,9 @@ export default function RootLayout({
         <link rel="stylesheet" href="//demo.productionready.io/main.css" />
       </head>
       <body>
-        <nav>📌 Global Navigation</nav>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
