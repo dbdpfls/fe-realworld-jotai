@@ -1,22 +1,17 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, Db } from "mongodb";
 
-const uri = process.env.MONGODB_URI; // .env.local에서 환경 변수 가져오기
-if (!uri) {
-  throw new Error("❌ MONGODB_URI 환경 변수가 설정되지 않았습니다.");
-}
+const uri = process.env.MONGODB_URI!;
+const options = {};
 
-const client = new MongoClient(uri);
-let clientPromise: Promise<MongoClient>;
+let client: MongoClient;
+let db: Db;
 
-if (process.env.NODE_ENV === "development") {
-  // 개발 환경에서는 클라이언트를 전역 객체에 저장하여 핫 리로딩 시 유지
-  if (!(global as any)._mongoClientPromise) {
-    (global as any)._mongoClientPromise = client.connect();
+export async function connectToDatabase() {
+  if (!client) {
+    client = new MongoClient(uri, options);
+    await client.connect();
+    db = client.db("realworld");
+    console.log("✅ MongoDB Connected!");
   }
-  clientPromise = (global as any)._mongoClientPromise;
-} else {
-  // 프로덕션 환경에서는 새로운 클라이언트를 생성
-  clientPromise = client.connect();
+  return db;
 }
-
-export default clientPromise;

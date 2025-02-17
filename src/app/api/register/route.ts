@@ -1,66 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
-
-// MongoDB 연결 설정
-const uri = process.env.MONGODB_URI!;
-const client = new MongoClient(uri);
+import { connectToDatabase } from "@/lib/mongodb";
+import bcrypt from "bcryptjs";
 
 export async function POST(req: NextRequest) {
   try {
-    // 요청 본문을 안전하게 파싱
-    const body = await req.text();
-    if (!body) {
-      return NextResponse.json(
-        { error: "Empty request body" },
-        { status: 400 }
-      );
-    }
+    const body = await req.json();
+    const { user } = body;
 
-    let data;
-    try {
-      data = JSON.parse(body); // JSON 파싱
-    } catch (error) {
-      return NextResponse.json(
-        { error: "Invalid JSON format" },
-        { status: 400 }
-      );
-    }
-
-    const { user } = data; // 구조 분해 할당
     if (!user || !user.email || !user.password || !user.username) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "필수 입력값이 누락되었습니다." },
         { status: 400 }
       );
     }
 
-    // MongoDB 연결
-    await client.connect();
-    const db = client.db("realworld");
+    const db = await connectToDatabase();
     const usersCollection = db.collection("users");
 
-    // 중복 확인
+    // 중복 이메일 체크
     const existingUser = await usersCollection.findOne({ email: user.email });
     if (existingUser) {
       return NextResponse.json(
-        { error: "Email already in use" },
+        { error: "이미 사용 중인 이메일입니다." },
         { status: 400 }
       );
     }
 
-    // 새 사용자 저장
-    const result = await usersCollection.insertOne(user);
+    // 비밀번호 암호화
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+
+    // 새 사용자 저장 (암호화된 비밀번호 사용)
+    const result = await usersCollection.insertOne({
+      username: user.username,
+      email: user.email,
+      password: hashedPassword,
+    });
+
     return NextResponse.json({
-      message: "User registered successfully",
+      message: "회원가입 성공",
       userId: result.insertedId,
     });
   } catch (error) {
     console.error("회원가입 오류:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  } finally {
-    await client.close(); // 연결 닫기
+    return NextResponse.json({ error: "서버 내부 오류" }, { status: 500 });
   }
 }

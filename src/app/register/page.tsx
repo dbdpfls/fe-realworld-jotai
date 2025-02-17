@@ -1,8 +1,9 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Register() {
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,6 +28,8 @@ export default function Register() {
       }
 
       console.log("회원가입 성공:", data);
+      setErrorMessage("");
+      router.push("/login?success=true");
     } catch (error: any) {
       console.error("회원가입 에러:", error);
       setErrorMessage(error.toString());
