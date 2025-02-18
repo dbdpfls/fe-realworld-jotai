@@ -1,4 +1,23 @@
+"use client";
+import { useAtom } from "jotai";
+import { authState } from "@/jotai/auth/atom";
+import { useRouter } from "next/navigation";
+
 export default function Setting() {
+  const router = useRouter();
+  const [auth, setAuth] = useAtom(authState);
+
+  const logout = () => {
+    setAuth({
+      isAuthenticated: false,
+      user: { username: "", email: "", image: "" },
+      token: null,
+    });
+
+    localStorage.removeItem("auth");
+    router.push("/");
+  };
+
   return (
     <div className="settings-page">
       <div className="container page">
@@ -53,7 +72,7 @@ export default function Setting() {
               </fieldset>
             </form>
             <hr />
-            <button className="btn btn-outline-danger">
+            <button className="btn btn-outline-danger" onClick={logout}>
               Or click here to logout.
             </button>
           </div>
