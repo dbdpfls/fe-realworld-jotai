@@ -1,12 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useAtom } from "jotai";
+import { authState } from "@/jotai/auth/atom";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [auth, setAuth] = useAtom(authState);
 
   const loginUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +31,20 @@ export default function Login() {
       }
 
       console.log("로그인 성공:", data);
+
+      const authData = {
+        isAuthenticated: true,
+        user: {
+          username: data.user.username,
+          email: data.user.email,
+          image: data.user.image || "",
+        },
+        token: data.token,
+      };
+
+      setAuth(authData);
+      localStorage.setItem("auth", JSON.stringify(authData));
+
       setErrorMessage("");
       router.push("/");
     } catch (error: any) {
